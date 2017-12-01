@@ -374,11 +374,6 @@ static int rx6110_probe(struct spi_device *spi)
 	return 0;
 }
 
-static int rx6110_remove(struct spi_device *spi)
-{
-	return 0;
-}
-
 static const struct spi_device_id rx6110_id[] = {
 	{ "rx6110", 0 },
 	{ }
@@ -390,7 +385,6 @@ static struct spi_driver rx6110_driver = {
 		.name = RX6110_DRIVER_NAME,
 	},
 	.probe		= rx6110_probe,
-	.remove		= rx6110_remove,
 	.id_table	= rx6110_id,
 };
 
