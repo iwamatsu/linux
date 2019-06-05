@@ -303,6 +303,7 @@ static void finish_csr_load(const struct firmware *fw, void *context)
 	uint32_t i;
 	uint32_t *dmc_payload;
 	bool fw_loaded = false;
+	size_t fsize;
 
 	if (!fw) {
 		i915_firmware_load_error_print(csr->fw_path, 0);
@@ -313,6 +314,12 @@ static void finish_csr_load(const struct firmware *fw, void *context)
 		DRM_ERROR("Unknown stepping info, firmware loading failed\n");
 		goto out;
 	}
+
+	fsize = sizeof(struct intel_css_header) +
+		sizeof(struct intel_package_header) +
+		sizeof(struct intel_dmc_header);
+	if (fsize > fw->size)
+		goto error_truncated;
 
 	/* Extract CSS Header information*/
 	css_header = (struct intel_css_header *)fw->data;
@@ -354,6 +361,9 @@ static void finish_csr_load(const struct firmware *fw, void *context)
 		goto out;
 	}
 	readcount += dmc_offset;
+	fsize += dmc_offset;
+	if (fsize > fw->size)
+		goto error_truncated;
 
 	/* Extract dmc_header information. */
 	dmc_header = (struct intel_dmc_header *)&fw->data[readcount];
@@ -384,6 +394,10 @@ static void finish_csr_load(const struct firmware *fw, void *context)
 
 	/* fw_size is in dwords, so multiplied by 4 to convert into bytes. */
 	nbytes = dmc_header->fw_size * 4;
+	fsize += nbytes;
+	if (fsize > fw->size)
+		goto error_truncated;
+
 	if (nbytes > CSR_MAX_FW_SIZE) {
 		DRM_ERROR("CSR firmware too big (%u) bytes\n", nbytes);
 		goto out;
@@ -411,6 +425,11 @@ out:
 		intel_csr_load_status_set(dev_priv, FW_FAILED);
 
 	release_firmware(fw);
+
+	return;
+
+error_truncated:
+	DRM_ERROR("Truncated DMC firmware, rejecting.\n");
 }
 
 /**
