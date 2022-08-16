@@ -1,0 +1,62 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * dts file for Avnet Ultra96 V2 rev1
+ *
+ * (C) Copyright 2018 - 2020, Xilinx, Inc.
+ *
+ * Michal Simek <michal.simek@xilinx.com>
+ */
+
+/dts-v1/;
+
+#include "zynqmp-zcu100-revC.dts"
+
+/ {
+	model = "Avnet Ultra96-V2 Rev1";
+	compatible = "avnet,ultra96-v2-rev1", "avnet,ultra96-v2", "xlnx,zynqmp";
+
+	/delete-node/ltc2954;
+	/delete-node/ina226;
+};
+
+&uart0 {
+	/delete-node/bluetooth;
+};
+
+&gpio {
+	/delete-property/gpio-line-names;
+};
+
+&sdio_pwrseq {
+	chip_en-gpios = <&gpio 8 GPIO_ACTIVE_LOW>;
+};
+&sdhci1 {
+	/delete-property/cap-power-off-card;
+	wilc_sdio@1 {
+		compatible = "microchip,wilc3000";
+		reg = <0>;
+		bus-width = <0x4>;
+		status = "okay";
+	};
+	/delete-node/wifi@2;
+};
+
+&i2csw_4 {
+	/delete-node/ pmic@5e;
+	pmic1: pmic@43 {
+		reg = <0x43>;
+		compatible = "infineon,irps5401";
+	};
+	pmic2: pmic@44 {
+		reg = <0x44>;
+		compatible = "infineon,irps5401";
+	};
+	pmic3: pmic@45 {
+		reg = <0x45>;
+		compatible = "infineon,ir38060";
+	};
+};
+
+&i2csw_5 {
+	/delete-node/ina226@40;
+};
