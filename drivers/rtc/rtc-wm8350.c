@@ -354,7 +354,7 @@ static int wm8350_rtc_suspend(struct device *dev)
 static int wm8350_rtc_resume(struct device *dev)
 {
 	struct wm8350 *wm8350 = dev_get_drvdata(dev);
-	int ret;
+	int ret = 0;
 
 	if (wm8350->rtc.alarm_enabled) {
 		ret = wm8350_rtc_start_alarm(wm8350);
@@ -362,7 +362,7 @@ static int wm8350_rtc_resume(struct device *dev)
 			dev_err(dev, "Failed to restart RTC alarm: %d\n", ret);
 	}
 
-	return 0;
+	return ret;
 }
 #endif
 
