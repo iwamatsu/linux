@@ -347,7 +347,7 @@ static const struct rtc_class_ops wm831x_rtc_ops = {
 static int wm831x_rtc_suspend(struct device *dev)
 {
 	struct wm831x_rtc *wm831x_rtc = dev_get_drvdata(dev);
-	int ret, enable;
+	int ret = 0, enable;
 
 	if (wm831x_rtc->alarm_enabled && device_may_wakeup(dev))
 		enable = WM831X_RTC_ALM_ENA;
@@ -359,7 +359,7 @@ static int wm831x_rtc_suspend(struct device *dev)
 	if (ret != 0)
 		dev_err(dev, "Failed to update RTC alarm: %d\n", ret);
 
-	return 0;
+	return ret;
 }
 
 /* Enable the alarm if it should be enabled (in case it was disabled to
@@ -368,7 +368,7 @@ static int wm831x_rtc_suspend(struct device *dev)
 static int wm831x_rtc_resume(struct device *dev)
 {
 	struct wm831x_rtc *wm831x_rtc = dev_get_drvdata(dev);
-	int ret;
+	int ret = 0;
 
 	if (wm831x_rtc->alarm_enabled) {
 		ret = wm831x_rtc_start_alarm(wm831x_rtc);
@@ -376,21 +376,21 @@ static int wm831x_rtc_resume(struct device *dev)
 			dev_err(dev, "Failed to restart RTC alarm: %d\n", ret);
 	}
 
-	return 0;
+	return ret;
 }
 
 /* Unconditionally disable the alarm */
 static int wm831x_rtc_freeze(struct device *dev)
 {
 	struct wm831x_rtc *wm831x_rtc = dev_get_drvdata(dev);
-	int ret;
+	int ret = 0;
 
 	ret = wm831x_set_bits(wm831x_rtc->wm831x, WM831X_RTC_CONTROL,
 			      WM831X_RTC_ALM_ENA, 0);
 	if (ret != 0)
 		dev_err(dev, "Failed to stop RTC alarm: %d\n", ret);
 
-	return 0;
+	return ret;
 }
 #else
 #define wm831x_rtc_suspend NULL
