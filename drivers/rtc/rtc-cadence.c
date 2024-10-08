@@ -268,7 +268,7 @@ static int cdns_rtc_probe(struct platform_device *pdev)
 
 	crtc->irq = platform_get_irq(pdev, 0);
 	if (crtc->irq < 0)
-		return -EINVAL;
+		return crtc->irq;
 
 	crtc->pclk = devm_clk_get(&pdev->dev, "pclk");
 	if (IS_ERR(crtc->pclk)) {
