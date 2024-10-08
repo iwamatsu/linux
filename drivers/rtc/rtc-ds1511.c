@@ -292,6 +292,8 @@ static int ds1511_rtc_probe(struct platform_device *pdev)
 		return PTR_ERR(ds1511_base);
 	ds1511->ioaddr = ds1511_base;
 	ds1511->irq = platform_get_irq(pdev, 0);
+	if (ds1511->irq < 0)
+		return ds1511->irq;
 
 	/*
 	 * turn on the clock and the crystal, etc.
