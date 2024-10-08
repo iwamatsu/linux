@@ -169,7 +169,7 @@ static int goldfish_rtc_probe(struct platform_device *pdev)
 
 	rtcdrv->irq = platform_get_irq(pdev, 0);
 	if (rtcdrv->irq < 0)
-		return -ENODEV;
+		return rtcdrv->irq;
 
 	rtcdrv->rtc = devm_rtc_allocate_device(&pdev->dev);
 	if (IS_ERR(rtcdrv->rtc))
