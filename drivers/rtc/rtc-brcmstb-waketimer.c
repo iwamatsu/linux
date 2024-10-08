@@ -300,7 +300,7 @@ static int brcmstb_waketmr_probe(struct platform_device *pdev)
 
 	ret = platform_get_irq(pdev, 0);
 	if (ret < 0)
-		return -ENODEV;
+		return ret;
 	timer->wake_irq = (unsigned int)ret;
 
 	timer->clk = devm_clk_get(dev, NULL);
