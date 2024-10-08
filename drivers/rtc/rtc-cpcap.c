@@ -268,6 +268,9 @@ static int cpcap_rtc_probe(struct platform_device *pdev)
 		return err;
 
 	rtc->alarm_irq = platform_get_irq(pdev, 0);
+	if (rtc->alarm_irq < 0)
+		return rtc->alarm_irq;
+
 	err = devm_request_threaded_irq(dev, rtc->alarm_irq, NULL,
 					cpcap_rtc_alarm_irq,
 					IRQF_TRIGGER_NONE | IRQF_ONESHOT,
@@ -285,6 +288,9 @@ static int cpcap_rtc_probe(struct platform_device *pdev)
 	 * every second.
 	 */
 	rtc->update_irq = platform_get_irq(pdev, 1);
+	if (rtc->update_irq < 0)
+		return rtc->update_irq;
+
 	err = devm_request_threaded_irq(dev, rtc->update_irq, NULL,
 					cpcap_rtc_update_irq,
 					IRQF_TRIGGER_NONE | IRQF_ONESHOT,
