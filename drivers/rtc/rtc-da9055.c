@@ -319,7 +319,7 @@ static int da9055_rtc_suspend(struct device *dev)
 {
 	struct platform_device *pdev = to_platform_device(dev);
 	struct da9055_rtc *rtc = dev_get_drvdata(&pdev->dev);
-	int ret;
+	int ret = 0;
 
 	if (!device_may_wakeup(&pdev->dev)) {
 		/* Disable the ALM IRQ */
@@ -328,7 +328,7 @@ static int da9055_rtc_suspend(struct device *dev)
 			dev_err(&pdev->dev, "Failed to disable RTC ALM\n");
 	}
 
-	return 0;
+	return ret;
 }
 
 /* Enable the alarm if it should be enabled (in case it was disabled to
@@ -338,7 +338,7 @@ static int da9055_rtc_resume(struct device *dev)
 {
 	struct platform_device *pdev = to_platform_device(dev);
 	struct da9055_rtc *rtc = dev_get_drvdata(&pdev->dev);
-	int ret;
+	int ret = 0;
 
 	if (!device_may_wakeup(&pdev->dev)) {
 		if (rtc->alarm_enable) {
@@ -349,7 +349,7 @@ static int da9055_rtc_resume(struct device *dev)
 		}
 	}
 
-	return 0;
+	return ret;
 }
 
 /* Unconditionally disable the alarm */
@@ -357,13 +357,13 @@ static int da9055_rtc_freeze(struct device *dev)
 {
 	struct platform_device *pdev = to_platform_device(dev);
 	struct da9055_rtc *rtc = dev_get_drvdata(&pdev->dev);
-	int ret;
+	int ret = 0;
 
 	ret = da9055_rtc_enable_alarm(rtc, 0);
 	if (ret < 0)
 		dev_err(&pdev->dev, "Failed to freeze RTC ALMs\n");
 
-	return 0;
+	return ret;
 
 }
 #else
