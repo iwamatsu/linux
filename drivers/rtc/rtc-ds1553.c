@@ -272,6 +272,8 @@ static int ds1553_rtc_probe(struct platform_device *pdev)
 		return PTR_ERR(ioaddr);
 	pdata->ioaddr = ioaddr;
 	pdata->irq = platform_get_irq(pdev, 0);
+	if (pdata->irq < 0)
+		return pdata->irq;
 
 	/* turn RTC on if it was not on */
 	sec = readb(ioaddr + RTC_SECONDS);
